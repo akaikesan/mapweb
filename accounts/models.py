@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
     class Meta:
         db_table = 'custom_user'
 
-
+    self_introduce = models.CharField(verbose_name ='self_introduce',max_length = 500,null=True,blank=True)
 
     latitude_1 = models.DecimalField(max_digits = 9, decimal_places=6 ,blank = True,null = True)
     longitude_1 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
