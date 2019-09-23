@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 # Create your models here.
 
 class CustomUser(AbstractUser):
@@ -30,6 +31,8 @@ class Content(models.Model):
     accounts = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 
     content = models.CharField(verbose_name ='content',max_length = 200)
+
+    date = models.DateTimeField(default = timezone.now)
 
     latitude = models.DecimalField(max_digits = 9, decimal_places=6)
     longitude = models.DecimalField(max_digits = 9, decimal_places=6)

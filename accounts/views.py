@@ -27,15 +27,12 @@ def login(request):
 
         if (account.check_password(data["password"])):
 
-
             auth_login(request,account)
-
             # セッションスタート
             if not request.session.session_key:
                 request.session.create()
 
             mResponse = HttpResponse(status=200)
-
 
             #is this right????????????????
             return mResponse
@@ -46,9 +43,8 @@ def login(request):
 
 def comment(request):
 
-
-
     if request.method == 'POST':
+
         data = json.loads(request.body)
         Content.objects.create(accounts = request.user, content = data["content"],latitude = data["latitude"],longitude = data["longitude"])
         return HttpResponse()#its confirmed the fact that the AnonimousUser is set to request.user without session.
@@ -71,31 +67,74 @@ def profile(request):
     if request.method == 'GET':
         account = request.user
 
-        contents = Content.objects.filter(accounts=request.user)
-
-        print (contents)
+        contents = Content.objects.filter(accounts=request.user).order_by('-date')[:23]
 
         jsondict = {
             "introduce":account.self_introduce,
             "username":account.username,
         }
+
         i = 0
+
         for content in contents:
 
-            print(content.content)
 
             jsondict["comment" + str(i)] = content.content
 
-            i += 1 
+            i += 1
 
-
-
+            if i > 20:
+                break
 
         resp = HttpResponse()
 
-        print(resp.content)
-
         resp.content = json.dumps(jsondict,ensure_ascii=False)
 
+        return resp
+
+def pincomment(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        print(data)
+
+        lat = float(data['latitude'])
+
+        lon = float(data['longitude'])
+
+        lon_rng = float(data['lon_range'])
+
+        lat_rng = float(2933.0/111263.0/2.0)
+
+        contents = Content.objects.filter(longitude__range=[lon-lon_rng,lon+lon_rng],latitude__range=[lat - lat_rng,lat+lat_rng]).order_by('-date')[:23]
+        i = 0
+        jsondict = {}
+        for content in contents:
+
+
+            jsondict["comment" + str(i)] = {
+                "content":content.content,
+                "latitude":content.latitude,
+                "longitude":content.longitude
+            }
+
+
+
+            i += 1
+
+            if i > 20:
+                break
+
+        resp = HttpResponse()
+
+        resp.content = json.dumps(jsondict,ensure_ascii=False,default = decimal_default_proc)
 
         return resp
+
+
+def decimal_default_proc(obj):
+    from decimal import Decimal
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
