@@ -8,27 +8,21 @@ class CustomUser(AbstractUser):
     class Meta:
         db_table = 'custom_user'
 
+    image = models.ImageField(upload_to='images/' ,null=True)
+
     self_introduce = models.CharField(verbose_name ='self_introduce',max_length = 500,null=True,blank=True)
 
-    latitude_1 = models.DecimalField(max_digits = 9, decimal_places=6 ,blank = True,null = True)
-    longitude_1 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
 
-    latitude_2 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
-    longitude_2 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
 
-    latitude_3 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
-    longitude_3 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
 
-    latitude_4 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
-    longitude_4 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
-
-    latitude_5 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
-    longitude_5 = models.DecimalField(max_digits = 9, decimal_places=6,blank = True,null = True)
 
 
 class Content(models.Model):
 
+    #if CustomUser is deleted, this Content will be deleted.
     accounts = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+
+    fav = models.IntegerField(verbose_name = 'favorite', default=0)
 
     content = models.CharField(verbose_name ='content',max_length = 200)
 
@@ -36,3 +30,5 @@ class Content(models.Model):
 
     latitude = models.DecimalField(max_digits = 9, decimal_places=6)
     longitude = models.DecimalField(max_digits = 9, decimal_places=6)
+
+    image = models.ImageField(upload_to='images/' ,null=True)

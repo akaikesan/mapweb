@@ -8,5 +8,7 @@ urlpatterns = [
     path('',views.login, name='login'),
     path('comment/',views.comment,name='comment'),
     path('profile/',views.profile,name='profile'),
-    path('pincomment/',views.pincomment,name='pincomment')
+    path('pincomment/',views.pincomment,name='pincomment'),
+    path('image/',views.imageResponse,name='imageresponse')
+
 ]

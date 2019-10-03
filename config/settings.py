@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts'
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', #    'django.middleware.security.SecurityMiddleware',の一行下に追加
@@ -131,6 +132,10 @@ USE_TZ = True
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 
