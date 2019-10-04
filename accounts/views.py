@@ -166,17 +166,6 @@ def decimal_default_proc(obj):
 
 def imageResponse(request):
     if request.method == 'GET':
-        """
-        #your_media_root = settings.MEDIA_ROOT
-
-        #url = get_public_url("mapsec","minimalism-1560688617481-8660.jpg")
-        local_filename, headers = urllib.request.urlretrieve("https://mapsec.s3-ap-northeast-1.amazonaws.com/minimalism-1560688617481-8660.jpg")
-        image_file = open(local_filename)
-        s3 = boto3.resource('s3')
-
-        bucket = s3.Bucket('mapsec')
-        image_file=bucket.download_file('minimalism-1560688617481-8660.jpg', 'minimalism-1560688617481-8660.jpg')
-        """
         s3 = boto3.resource('s3')
         bucket = s3.Bucket('mapsec')
         obj = bucket.Object('minimalism-1560688617481-8660.jpg').get()
@@ -197,28 +186,3 @@ def imageResponse(request):
 
         return HttpResponse(File(stream), content_type="image/jpeg")
             #image_file = request.user.image
-
-
-"""
-def get_public_url(bucket, target_object_path):
-    ------------------------------------------------------------------------------
-    対象のS3ファイルのURLを取得する
-
-    Parameters
-    ----------
-    bucket: string
-        S3のバケット名
-    target_object_path: string
-        取得したいS3内のファイルパス
-
-    Returns
-    ----------
-    url: string
-        S3上のオブジェクトのURL
-    ------------------------------------------------------------------------------
-    bucket_location = s3.get_bucket_location(Bucket=bucket)
-    return "https://s3-{0}.amazonaws.com/{1}/{2}".format(
-        bucket_location['LocationConstraint'],
-        bucket,
-        target_object_path)
-"""
