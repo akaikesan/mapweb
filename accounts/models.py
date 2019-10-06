@@ -8,13 +8,19 @@ class CustomUser(AbstractUser):
     class Meta:
         db_table = 'custom_user'
 
-    image = models.ImageField(upload_to='images/' ,null=True)
+    image = models.ImageField(upload_to='images/', null=True)
 
     self_introduce = models.CharField(verbose_name ='self_introduce',max_length = 500,null=True,blank=True)
 
+    def get_followers(self):
+        relations = Relationship.objects.filter(follow=self)
+        return [relation.follower for relation in relations]
 
 
+class RelationShip(models.Model):
 
+    follow = models.ForeignKey(CustomUser, related_name='follows',on_delete=models.CASCADE)
+    follower = models.ForeignKey(CustomUser, related_name='followers',on_delete=models.CASCADE)
 
 
 class Content(models.Model):
@@ -31,4 +37,4 @@ class Content(models.Model):
     latitude = models.DecimalField(max_digits = 9, decimal_places=6)
     longitude = models.DecimalField(max_digits = 9, decimal_places=6)
 
-    image = models.ImageField(upload_to='images/' ,null=True)
+    image = models.ImageField(upload_to='images/', null=True)

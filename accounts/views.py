@@ -35,6 +35,7 @@ def login(request):
 
         account = CustomUser.objects.get(email=data["email"])
 
+
         if(account == None):
 
             return HttpResponse('Unauthorized',status=401)
@@ -164,25 +165,37 @@ def decimal_default_proc(obj):
 
 
 
-def imageResponse(request):
+def imageResponse(request, name):
     if request.method == 'GET':
-        s3 = boto3.resource('s3')
-        bucket = s3.Bucket('mapsec')
-        obj = bucket.Object('minimalism-1560688617481-8660.jpg').get()
-        tmp = tempfile.NamedTemporaryFile()
 
+        if settings.DEBUG == False:
+            s3 = boto3.resource('s3')
+            bucket = s3.Bucket('mapsec')
+            obj = bucket.Object(filename).get()
+            tmp = tempfile.NamedTemporaryFile()
 
-        stream = io.BytesIO(obj['Body'].read())
+            stream = io.BytesIO(obj['Body'].read())
+            img = Image.open(stream)
+            img.show()
 
-        img = Image.open(stream)
+            print(img)
 
+            if not img:
+                return HttpResponse(status=200)
 
-        img.show()
-
-        print(img)
-
-        if not img:
-            return HttpResponse(status=200)
-
-        return HttpResponse(File(stream), content_type="image/jpeg")
+            return HttpResponse(File(stream), content_type="image/jpeg")
             #image_file = request.user.image
+
+
+        elif settings.DEBUG == True:
+
+
+
+            user = CustomUser.objects.get(username = name)
+
+            img = user.image
+
+            if not img:
+                return HttpResponse(status=200)
+
+            return HttpResponse(File(img),content_type="image/jpeg")
