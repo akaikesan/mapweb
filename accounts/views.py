@@ -27,19 +27,21 @@ from django.contrib.sessions.models import Session
 
 
 
-
 def login(request):
     if request.method == 'POST':
         #this data has key "email", "password"
         data = json.loads(request.body)
-
-        account = CustomUser.objects.get(email=data["email"])
-
+        try:
+            account = CustomUser.objects.get(email = data["email"])
+        except CustomUser.DoesNotExist:
+            account = None
 
         if(account == None):
-
+            print("account is None")
             return HttpResponse('Unauthorized',status=401)
 
+
+        print(data["password"])
         if (account.check_password(data["password"])):
 
             auth_login(request,account)
@@ -53,6 +55,7 @@ def login(request):
             #is this right????????????????
             return mResponse
         else:
+            print("password is not correct")
             return HttpResponse('Unauthorized', status=401)
 
 
@@ -199,3 +202,26 @@ def imageResponse(request, name):
                 return HttpResponse(status=200)
 
             return HttpResponse(File(img),content_type="image/jpeg")
+
+def register(request):
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        try:
+            sameAccount = CustomUser.objects.get(email = data["email"])
+        except CustomUser.DoesNotExist:
+            sameAccount = None
+
+        if(sameAccount == None):
+
+            user = CustomUser.objects.create(username = data['username'],email = data['email'])
+
+            user.set_password(data["password"])
+
+            user.save()
+
+            return HttpResponse(status = 200)
+
+        else:
+            return HttpResponse(status = 401)

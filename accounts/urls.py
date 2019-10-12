@@ -9,6 +9,7 @@ urlpatterns = [
     path('comment/',views.comment,name='comment'),
     path('profile/',views.profile,name='profile'),
     path('pincomment/',views.pincomment,name='pincomment'),
-    path('image/<str:name>/',views.imageResponse,name='imageresponse')
+    path('image/<str:name>/',views.imageResponse,name='imageresponse'),
+    path('register/',views.register,name='register')
 
 ]

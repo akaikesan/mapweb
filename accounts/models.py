@@ -8,7 +8,11 @@ class CustomUser(AbstractUser):
     class Meta:
         db_table = 'custom_user'
 
-    image = models.ImageField(upload_to='images/', null=True)
+    email = models.EmailField(null = False, unique=True,blank = False)
+
+    image = models.ImageField(upload_to='images/', null=True, blank = True)
+
+
 
     self_introduce = models.CharField(verbose_name ='self_introduce',max_length = 500,null=True,blank=True)
 
