@@ -15,6 +15,7 @@ import io
 
 
 from PIL import Image
+
 from django.core.files import File
 from django.conf import settings
 from django.http import HttpResponse
@@ -24,6 +25,7 @@ from .models import CustomUser,Content
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.sessions.models import Session
+from django.core.files.base import ContentFile
 
 
 
@@ -167,8 +169,35 @@ def decimal_default_proc(obj):
 
 
 
+def imageRegister(request):
+    if request.method == 'POST':
+        if settings.DEBUG == True:
+
+            data = json.loads(request.body, strict=False)
+
+            stream = base64.b64decode(data["content"])
+
+            tmp = tempfile.NamedTemporaryFile()
+
+            tmp.write(stream)
+            tmp.flush()
+
+            if not tmp:
+                return HttpResponse(status = 500)
+
+            else:
+                request.user.image.save(request.user.username + "_logo.",File(tmp),save=True)
+                return HttpResponse(status = 200)
+
+
+
+
+
+
+
 
 def imageResponse(request, name):
+
     if request.method == 'GET':
 
         if settings.DEBUG == False:
@@ -179,14 +208,12 @@ def imageResponse(request, name):
 
             stream = io.BytesIO(obj['Body'].read())
             img = Image.open(stream)
-            img.show()
-
-            print(img)
-
             if not img:
-                return HttpResponse(status=200)
+                return HttpResponse(status=500)
+            else:
+                request.user.update(image = File(img))
+                return HttpResponse(status = 200)
 
-            return HttpResponse(File(stream), content_type="image/jpeg")
             #image_file = request.user.image
 
 
@@ -197,6 +224,8 @@ def imageResponse(request, name):
             user = CustomUser.objects.get(username = name)
 
             img = user.image
+
+
 
             if not img:
                 return HttpResponse(status=200)
