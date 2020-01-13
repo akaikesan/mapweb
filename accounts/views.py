@@ -14,6 +14,7 @@ import io
 
 
 
+
 from PIL import Image
 
 from django.core.files import File
@@ -43,7 +44,6 @@ def login(request):
             return HttpResponse('Unauthorized',status=401)
 
 
-        print(data["password"])
         if (account.check_password(data["password"])):
 
             auth_login(request,account)
